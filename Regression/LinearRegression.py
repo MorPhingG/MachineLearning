@@ -47,6 +47,6 @@ def linearRegreMul(url):
     print(pow(sum((y-b)**2),1/2)) #print MSE
 
 if __name__ == "__main__":
-    linearRegreSin("http://www.cs.iit.edu/~agam/cs584/data/regression/svar-set3.dat")
+    linearRegreSin("http://www.cs.iit.edu/~agam/cs584/data/regression/svar-set1.dat")
     linearRegreMul("http://www.cs.iit.edu/~agam/cs584/data/regression/mvar-set1.dat")
     #http://www.cs.iit.edu/~agam/cs584/data/regression/svar-set3.dat
