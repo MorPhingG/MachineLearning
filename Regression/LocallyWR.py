@@ -1,6 +1,7 @@
 from math import ceil
 import numpy as np
 from scipy import linalg
+from getData import *
 
 
 def lowess(x, y, f=2. / 3., iter=3):
@@ -39,16 +40,19 @@ def lowess(x, y, f=2. / 3., iter=3):
 
 if __name__ == '__main__':
     import math
-    n = 100
-    x = np.linspace(0, 2 * math.pi, n)
-    y = np.sin(x) + 0.3 * np.random.randn(n)
+    n = 200
+    [x, y] = getData("http://www.cs.iit.edu/~agam/cs584/data/regression/svar-set4.dat")
+    x = x.T[0]
+    y = y.T[0]
+    #x = np.linspace(0, 2 * math.pi, n)
+    #y = np.sin(x) + 0.3 * np.random.randn(n)
 
     f = 0.25
     yest = lowess(x, y, f=f, iter=3)
 
     import pylab as pl
     pl.clf()
-    pl.plot(x, y, label='y noisy')
-    pl.plot(x, yest, label='y pred')
+    pl.plot(x, y, '.',label='y noisy')
+    pl.plot(x, yest, '.',label='y pred')
     pl.legend()
     pl.show()

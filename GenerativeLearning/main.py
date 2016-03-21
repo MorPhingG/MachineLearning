@@ -1,84 +1,84 @@
-#GDA
-#author:Xiaolewen
-import matplotlib.pyplot as plt
-from numpy import *
+import numpy as np
+from sklearn.lda import LDA
+from getData import *
 
-#Randomly generate two cluster data of Gaussian distributions
-mean0=[2,3]
-cov=mat([[1,0],[0,2]])
-x0=random.multivariate_normal(mean0,cov,500).T   #The first class point which labael equal 0
-y0=zeros(shape(x0)[1])
-#print x0,y0
-mean1=[7,8]
-cov=mat([[1,0],[0,2]])
-x1=random.multivariate_normal(mean1,cov,300).T
-y1=ones(shape(x1)[1]) #The second class point which label equals 1
-#print x1,y1
+from sklearn import datasets
 
-x=array([concatenate((x0[0],x1[0])),concatenate((x0[1],x1[1]))])
-y=array([concatenate((y0,y1))])
-m=shape(x)[1]
-#print x,y,m
-#Caculate the parameters:\phi,\u0,\u1,\Sigma
-phi=(1.0/m)*len(y1)
-#print phi
-u0=mean(x0,axis=1)
-#print u0
-u1=mean(x1,axis=1)
-#print u1
+# Q1
+# [x,y]=getData("https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data")
+# x = x[0:100,0]
+# y = y[0:100]
+# clf = LDA()
+# clf.fit(x,y)
+# LDA(n_components=None, priors=None, shrinkage=None, solver='svd',
+#   store_covariance=False, tol=0.0001)
+# for i in range(100):
+#     y_pre = clf.predict([x[i]])
+#     print(y_pre)
 
-xplot0=x0;xplot1=x1   #save the original data  to plot
-x0=x0.T;x1=x1.T;x=x.T
-#print x0,x1,x
-x0_sub_u0=x0-u0
-x1_sub_u1=x1-u1
-#print x0_sub_u0
-#print x1_sub_u1
-x_sub_u=concatenate([x0_sub_u0,x1_sub_u1])
-#print x_sub_u
+# Q2
+[x,y]=getData("https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data")
+x = x[0:100]
+y = y[0:100]
+sum = np.zeros((4,1))
+for i in range(4):
+    for j in range(50):
+        sum[i] = sum[i] + x[j][i]
+sum = sum/50 #calculate mean
+std = np.std(x[0:50],axis=0)
 
-x_sub_u=mat(x_sub_u)
-#print x_sub_u
+x = x[50:100]
+sum1 = np.zeros((4,1))
+for i in range(4):
+    for j in range(50):
+        sum1[i] = sum1[i] + x[j][i]
+sum1 = sum1/50 #calculate mean
+std1 = np.std(x,axis=0)
 
-sigma=(1.0/m)*(x_sub_u.T*x_sub_u)
-#print sigma
+[x,y]=getData("https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data")
+x = x[0:100]
+y = y[0:100]
+clf = LDA()
+clf.fit(x,y)
+LDA(n_components=None, priors=None, shrinkage=None, solver='svd',
+  store_covariance=False, tol=0.0001)
+y_pre = np.zeros((100,1))
+for i in range(100):
+    y_pre[i] = clf.predict([x[i]])
 
-#plot the  discriminate boundary ,use the u0_u1's midnormal
-midPoint=[(u0[0]+u1[0])/2.0,(u0[1]+u1[1])/2.0]
-#print midPoint
-k=(u1[1]-u0[1])/(u1[0]-u0[0])
-#print k
-x=range(-2,11)
-y=[(-1.0/k)*(i-midPoint[0])+midPoint[1] for i in x]
+# Q3
+[x,y]=getData("https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data")
+x = x[100:150]
+sum2 = np.zeros((4,1))
+for i in range(4):
+    for j in range(50):
+        sum2[i] = sum2[i] + x[j][i]
+sum2 = sum2/50 #calculate mean
+std2 = np.std(x,axis=0)
 
+[x,y]=getData("https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data")
+clf = LDA()
+clf.fit(x,y)
+LDA(n_components=None, priors=None, shrinkage=None, solver='svd',
+  store_covariance=False, tol=0.0001)
+y_pre = np.zeros((150,1))
+for i in range(150):
+    y_pre[i] = clf.predict([x[i]])
 
+[x,y]=getData("https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data")
+x = x[0:120]
+y = y[0:120]
+clf = LDA()
+clf.fit(x,y)
+LDA(n_components=None, priors=None, shrinkage=None, solver='svd',
+  store_covariance=False, tol=0.0001)
+y_pre = np.zeros((120,1))
+for i in range(120):
+    y_pre[i] = clf.predict([x[i]])
 
-#plot contour for two gaussian distributions
-def gaussian_2d(x, y, x0, y0, sigmaMatrix):
-    return exp(-0.5*((x-x0)**2+0.5*(y-y0)**2))
-delta = 0.025
-xgrid0=arange(-2, 6, delta)
-ygrid0=arange(-2, 6, delta)
-xgrid1=arange(3,11,delta)
-ygrid1=arange(3,11,delta)
-X0,Y0=meshgrid(xgrid0, ygrid0)   #generate the grid
-X1,Y1=meshgrid(xgrid1,ygrid1)
-Z0=gaussian_2d(X0,Y0,2,3,cov)
-Z1=gaussian_2d(X1,Y1,7,8,cov)
-
-#plot the figure and add comments
-plt.figure(1)
-plt.clf()
-plt.plot(xplot0[0],xplot0[1],'ko')
-plt.plot(xplot1[0],xplot1[1],'gs')
-plt.plot(u0[0],u0[1],'rx',markersize=20)
-plt.plot(u1[0],u1[1],'y*',markersize=20)
-plt.plot(x,y)
-CS0=plt.contour(X0, Y0, Z0)
-plt.clabel(CS0, inline=1, fontsize=10)
-CS1=plt.contour(X1,Y1,Z1)
-plt.clabel(CS1, inline=1, fontsize=10)
-plt.title("Gaussian discriminat analysis")
-plt.xlabel('Feature Dimension (0)')
-plt.ylabel('Feature Dimension (1)')
-plt.show(1)
+# Q4
+iris = datasets.load_iris()
+from sklearn.naive_bayes import GaussianNB
+gnb = GaussianNB()
+y_pred = gnb.fit(iris.data, iris.target).predict(iris.data)
+print("Number of mislabeled points out of a total %d points : %d" (iris.data.shape[0],(iris.target != y_pred).sum()))
